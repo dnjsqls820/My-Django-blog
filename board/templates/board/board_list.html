@@ -1,0 +1,30 @@
+{% extends 'home/base.html' %}
+
+{% block contents %}
+
+
+<table style="text-align: center;" class="table table-skyblue">
+    <thead class="thead-inverse">
+        <tr>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일자</th>
+        </tr>
+    </thead>
+    {% for board in boards %}
+    <tbody style="text-align: center;">
+        <tr>
+            <td><a href="/board/detail/{{ board.pk }}" target="_self">{{board.title}}</a></td>
+            <td>{{board.writer}}</td>
+            <td>{{board.write_dttm|date:"Y-m-d"}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div><a href="{% url 'board:board_write' %}"><button>글쓰기</button></a></div>
+<div style="border: 1px bloack solid; margin: 20px 0px;"></div>
+
+
+
+{% include 'board/pagination.html' %}
+{% endblock contents %}

@@ -1,0 +1,130 @@
+from django.shortcuts import get_object_or_404, render,redirect
+from .models import Board
+from .forms import BoardWriteForm
+from user.decorators import login_required
+from datetime import date, datetime, timedelta
+from user.models import Member
+from .pagination import pagination
+
+
+# Create your views here.
+# post_list라는 def 를 만들어 request을 넘겨받아 render메서드를 호출한다.
+# def post_list는 호출하여 받은 return post/post_list.html 템플릿을 보여준다.
+def board_list(request):
+    login_session = request.session.get('login_session', '')
+    context = { 'login_session' : login_session}
+
+    page = pagination(request, Board)
+    context.update(page)
+
+    return render(request, 'board/board_list.html', context)
+    # posts = Posting.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    # return render(request, 'post/post_list.html', {'posts':posts})
+    
+def board_detail(request,pk):
+    login_session = request.session.get('login_session','')
+    context = { 'login_session': login_session }
+
+    board = get_object_or_404(Board, id=pk)
+    context['board'] = board
+
+
+    # 글쓴이인지 확인
+    if board.writer.user_id == login_session:
+        context['writer'] = True
+    else:
+        context['writer'] = False
+
+    response = render(request, 'board/board_detail.html', context)
+
+
+    # 조회수 기능(쿠키이용)
+    expire_date, now = datetime.now(), datetime.now()
+    expire_date += timedelta(days=1)
+    expire_date = expire_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    expire_date -= now
+    max_age = expire_date.total_seconds()
+
+    cookie_value = request.COOKIES.get('hitboard', '_')
+
+    if f'_{pk}_' not in cookie_value:
+        cookie_value += f'{pk}_'
+        response.set_cookie('hitboard', value=cookie_value, max_age=max_age, httponly=True)
+        board.hits += 1
+        board.save()
+    return response
+
+@login_required
+def board_write(request):
+    login_session = request.session.get('login_session', '')
+    context = { 'login_session': login_session }
+
+    if request.method == 'GET':
+        write_form = BoardWriteForm()
+        context['forms'] = write_form
+        return render(request, 'board/board_write.html', context)
+    
+    elif request.method == 'POST':
+        write_form = BoardWriteForm(request.POST)
+
+        if write_form.is_valid():
+            writer = Member.objects.get(user_id = login_session)
+            board = Board(
+                title=write_form.title,
+                contents=write_form.contents,
+                writer=writer,
+                board_name=write_form.board_name
+            )
+            board.save()
+            return redirect('/board')
+        else:
+            context['forms'] = write_form
+            if write_form.errors:
+                for value in write_form.errors.values():
+                    context['error'] = value
+            return render(request, 'board/board_write.html', context)
+
+def board_delete(request, pk):
+    login_session = request.session.get('login_session', '')
+    board = get_object_or_404(Board, id=pk)
+    if board.writer.user_id == login_session:
+        board.delete()
+        return redirect('/')
+    else:
+        return redirect(f'/board/detail/{pk}')
+
+@login_required
+def board_modify(request, pk):
+    login_session = request.session.get('login_session','')
+    context = { 'login_session': login_session}
+
+    board = get_object_or_404(Board, id=pk)
+    context['board'] = board
+
+    if board.writer.user_id != login_session:
+        return redirect(f'/board/detail/{pk}/')
+
+    if request.method == 'GET':
+        write_form = BoardWriteForm(instance=board)
+        context['forms'] = write_form
+        return render(request, 'board/board_modify.html', context)
+
+    elif request.method == 'POST':
+        write_form = BoardWriteForm(request.POST)
+
+        if write_form.is_valid():
+
+            board.title = write_form.title
+            board.contents = write_form.contents
+            board.board_name = write_form.board_name
+
+
+            board.save()
+            return redirect('/board')
+        else:
+            context['forms'] = write_form
+            if write_form.errors:
+                for value in write_form.errors.values():
+                    context['error'] = value
+
+            return render(request, 'board/board_modify.html', context)

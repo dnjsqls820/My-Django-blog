@@ -1,0 +1,21 @@
+{% extends 'home/base.html' %}
+
+{% block contents %}
+<div>게시판</div>
+<form action="" method="POST">
+    {% csrf_token %}
+
+    {% for form in forms %}
+    <div>
+        <label for="{{ form.id_for_label }}">{{ form.label }}</label>
+        {{ form }}
+        <p>{{user_id}}</p>
+    </div>
+    {% endfor %}
+    
+    {% if error %}
+    {{ error }}
+    {% endif %}
+    <button type="submit">글 등록</button>
+</form>
+{% endblock contents %}

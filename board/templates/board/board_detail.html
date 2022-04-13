@@ -1,0 +1,37 @@
+{% extends 'home/base.html'%}
+
+{% block contents %}
+    <div style="background-color: yellow;" class="post">
+            <div class="date">
+            </div>
+        <table class="table table-dark">
+            <thead class="thead-inverse">
+                <tr>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                    <th>작성일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{board.title}}</td>
+                    <td>{{board.writer}}</td>
+                    <td>{{board.hits}}</td>
+                    <td>{{board.write_dttm}}</td>
+                </tr>
+            </tbody>
+            <body>
+                <td>{{board.contents|safe}}</td>
+                
+            </body>
+        </table>
+        <!-- linebreaksbr = 블로그 글 텍스트에서 행이 바뀌면 문단으로 변환-->
+        {% if writer %}
+        <div class="mb-4">
+            <a href="/board/detail/{{board.id}}/modify/"><button>수정하기</button></a>
+            <a href="/board/detail/{{board.id}}/delete/"><button>삭제하기</button></a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock contents %}
