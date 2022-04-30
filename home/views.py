@@ -1,12 +1,10 @@
-
 from django.shortcuts import render
 from django.conf import settings # 추천!
 from django.http import HttpResponse
 from user.models import Member
 
 def hello(request):
-    context = {}
-    
+    context = {}    
     login_session = request.session.get('login_session', '')
     if login_session == '':
         context['login_session'] = False

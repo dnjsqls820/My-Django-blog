@@ -30,7 +30,7 @@
         {% if writer %}
         <div class="mb-4">
             <a href="/board/detail/{{board.id}}/modify/"><button>수정하기</button></a>
-            <a href="/board/detail/{{board.id}}/delete/"><button>삭제하기</button></a>
+            <a href="/board/detail/{{board.id}}/delete/"><button onclick="return confirm('삭제 하시겠습니까?')">삭제하기</button></a>
         </div>
         {% endif %}
     </div>

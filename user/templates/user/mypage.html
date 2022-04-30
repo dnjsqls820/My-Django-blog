@@ -1,0 +1,34 @@
+{% extends 'home/base.html'%}
+
+{% block contents %}
+    <div style="background-color: yellow;" class="post">
+            <div class="date">
+            </div>
+        <table class="table table-dark">
+            <thead class="thead-inverse">
+                <tr>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>계정생성일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{member.user_id}}</td>
+                    <td>{{member.user_name}}</td>
+                    <td>{{member.user_email}}</td>
+                    <td>{{member.user_register_dttm}}</td>
+                </tr>
+            </tbody>
+
+        </table>
+        <!-- linebreaksbr = 블로그 글 텍스트에서 행이 바뀌면 문단으로 변환-->
+        {% if member %}
+        <div class="mb-4">
+            <a href="{% url 'user:password' %}"><button>비밀번호 변경</button></a>
+            <a href="{% url 'user:mypage_delete' %}"><button onclick="return confirm('탈퇴 하시겠습니까?')">탈퇴하기</button></a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock contents %}

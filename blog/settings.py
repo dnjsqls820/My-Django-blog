@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'home',
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -139,6 +141,7 @@ LOGIN_REDIRECT_URL = '/'
 MEDIA_URL = '/media/'
 MEIDA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 # Summernote 선택 설정

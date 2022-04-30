@@ -44,7 +44,7 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
             {% if login_session %}
                 <li><a href = "{% url 'board:board_list' %}" class="nav-link px-2 text-white">게시판</a></li>
-                  <li><a href="#" class="nav-link px-2 text-white">Hello {{username}} </a></li>
+                <li><a href="{% url 'user:mypage' %}" class="nav-link px-2 text-white">마이페이지</a></li>
         </ul>
             {% endif %}
         {% if login_session %}
@@ -64,6 +64,10 @@
 <body style="background-color: skyblue;">
 <div style="border: 1px black solid; margin: 20px 0px;"></div>
           {% block contents %}
+          {{regist}}
+          <li style="text-align: center;">간단하게 CRUD를 이용해 회원가입과 게시글 작성을 구현 해보았다.</li>
+          <li style="text-align: center;">다음에는 Bootstrap을 써서 Front를 꾸미고 다양한 기능을 추가해봐야겠다.</li>
+          <p style="text-align: center;">2022년 04월18일</p>
           {% endblock contents %}
 
 </body>
