@@ -1,4 +1,4 @@
-from multiprocessing import context
+
 from django.shortcuts import render, get_object_or_404
 from user.decorators import login_required
 from django.shortcuts import render,redirect
@@ -46,26 +46,25 @@ def login(request):
         if loginform.is_valid():
             request.session['login_session'] = loginform.login_session
             request.session.set_expiry(0)
-            return redirect('/')
+            return render(request,'home/base.html',{'login_session':loginform.login_session})
             
         else:
             context['forms'] = loginform
             if loginform.errors:
                 for value in loginform.errors.values():
                     context['error'] = value
+        
         return render(request, 'user/login.html', context)
 
-@login_required
+# @login_required
 def mypage(request):
     login_session = request.session.get('login_session','')
-    context = { 'login_session' : login_session }
-
-    member = Member.objects.get(user_id = login_session)
-    context['member'] = member
+    member_object = Member.objects.filter(user_id=login_session)
+    context= {
+        'member':member_object,
+        'login_session' : login_session 
+    }
     
-    if context['login_session'] == True:
-        # username 가져오기
-        context['username'] = Member.objects.get(user_id = login_session)
     return render(request,'user/mypage.html', context)
         
 def mypage_delete(request):
@@ -92,7 +91,6 @@ def mypage_modify(request):
 
 
 @login_required
-
 def password_edit_view(request):
     login_session = request.session.get('login_session', '')
     context = { 'login_session' : login_session }

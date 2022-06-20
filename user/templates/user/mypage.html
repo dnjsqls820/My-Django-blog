@@ -1,6 +1,8 @@
 {% extends 'home/base.html'%}
 
 {% block contents %}
+{% if member %}
+{% for member in member %}
     <div style="background-color: yellow;" class="post">
             <div class="date">
             </div>
@@ -21,14 +23,9 @@
                     <td>{{member.user_register_dttm}}</td>
                 </tr>
             </tbody>
-
+{%endfor%}
+{%endif%}
         </table>
         <!-- linebreaksbr = 블로그 글 텍스트에서 행이 바뀌면 문단으로 변환-->
-        {% if member %}
-        <div class="mb-4">
-            <a href="{% url 'user:password' %}"><button>비밀번호 변경</button></a>
-            <a href="{% url 'user:mypage_delete' %}"><button onclick="return confirm('탈퇴 하시겠습니까?')">탈퇴하기</button></a>
-        </div>
-        {% endif %}
     </div>
 {% endblock contents %}
